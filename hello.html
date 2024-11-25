@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Data Viewer</title>
+</head>
+<body>
+  <h1>Hydroponic System Data</h1>
+  <div id="data">
+    <!-- Data will be displayed here -->
+  </div>
+
+  <script>
+    const dataDiv = document.getElementById('data');
+    const ws = new WebSocket('ws://localhost:8080');
+
+    ws.onopen = () => {
+      console.log('Connected to WebSocket server');
+    };
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      dataDiv.innerHTML = `
+        <p><strong>TDS Voltage:</strong> ${data.tds} V</p>
+        <p><strong>Water Level:</strong> ${data.waterLevel} cm</p>
+        <p><strong>Pump Status:</strong> ${data.pumpStatus}</p>
+        <p><strong>Bio-ExG Value:</strong> ${data.bioExg} V</p> <!-- New field for Bio-ExG -->
+      `;
+    };
+
+    ws.onerror = (error) => {
+      console.error('WebSocket Error:', error);
+    };
+  </script>
+</body>
+</html>
